@@ -225,6 +225,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: 2;
+  will-change: transform;
 }
 
 .edge {
@@ -291,12 +292,14 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   text-anchor: middle;
+  pointer-events: none;
 }
 .node .sublabel {
   fill: var(--ink-soft);
   font-size: 11px;
   letter-spacing: 2px;
   text-anchor: middle;
+  pointer-events: none;
 }
 
 /* core node is larger / amber-tinted */

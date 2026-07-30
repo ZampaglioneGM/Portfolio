@@ -130,9 +130,13 @@ PORTFOLIO.nodes.forEach((n, i) => {
   // staggered reveal — the "boot / sync" sequence
   setTimeout(() => g.classList.add("is-revealed"), 300 + i * 140);
 
-  g.addEventListener("mouseenter", () => highlight(n.id));
+  g.addEventListener("mouseenter", () => {
+    highlight(n.id);
+    updateHud(n.id);
+  });
   g.addEventListener("mouseleave", () => {
     if (!graph.classList.contains("has-selection")) clearHighlight();
+    updateHud(null);
   });
   g.addEventListener("click", () => selectNode(n.id));
   g.addEventListener("keydown", (e) => {
@@ -173,12 +177,10 @@ function highlight(nodeId) {
   if (selectedId) return; // don't fight an active selection
   edgeEls.forEach((e) => e.classList.remove("is-active"));
   setEdgesActive(nodeId, true);
-  updateHud(nodeId);
 }
 
 function clearHighlight() {
   edgeEls.forEach((e) => e.classList.remove("is-active"));
-  updateHud(null);
 }
 
 function selectNode(nodeId) {
@@ -190,7 +192,6 @@ function selectNode(nodeId) {
   edgeEls.forEach((e) => e.classList.remove("is-active"));
   setEdgesActive(nodeId, true);
   openPanel(nodeById[nodeId]);
-  updateHud(nodeId);
 }
 
 function deselect() {
@@ -255,12 +256,47 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") deselect();
 });
 
+// ---- Parallax (mouse-driven 2.5D tilt) ----------------------
+// One rigid tilt on the whole graph, like a picture hinged in space —
+// not separate layers sliding at different rates. Exponential damping
+// (lerp toward the target by a fixed fraction each frame) is what makes
+// it decelerate naturally into place instead of snapping or overshooting.
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+let targetParX = 0;
+let targetParY = 0;
+let parX = 0;
+let parY = 0;
+
+if (!prefersReducedMotion) {
+  window.addEventListener("mousemove", (e) => {
+    targetParX = (e.clientX / window.innerWidth) * 2 - 1; // -1..1
+    targetParY = (e.clientY / window.innerHeight) * 2 - 1;
+  });
+  window.addEventListener("mouseleave", () => {
+    targetParX = 0;
+    targetParY = 0;
+  });
+}
+
 // ---- Animation loop ----------------------------------------
 function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
 function frame() {
+  // parallax — horizontal tilt dominant, vertical tilt subtle, plus a
+  // touch of drift, all as one rigid transform on the graph
+  if (!prefersReducedMotion) {
+    parX = lerp(parX, targetParX, 0.05);
+    parY = lerp(parY, targetParY, 0.05);
+    const rotateY = parX * -9;
+    const rotateX = parY * 3.5;
+    const shiftX = parX * 14;
+    graph.style.transform = `perspective(1400px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateX(${shiftX.toFixed(1)}px)`;
+  }
+
   // synaptic pulses
   for (const pu of pulses) {
     pu.t += pu.speed;
