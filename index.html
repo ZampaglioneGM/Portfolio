@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaston Zampaglione — Career Trail</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Faint hexagon grid + scanline live in CSS via ::before/::after -->
+    <div class="animus-stage">
+      <!-- Corner HUD brackets -->
+      <span class="hud-corner tl"></span>
+      <span class="hud-corner tr"></span>
+      <span class="hud-corner bl"></span>
+      <span class="hud-corner br"></span>
+
+      <!-- Theme toggle -->
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        aria-label="Switch color theme"
+        title="Switch color theme"
+        aria-pressed="false"
+      >
+        <span class="theme-toggle__cue">THEME</span>
+        <span class="theme-toggle__icon" id="themeIcon">☀</span>
+        <span class="theme-toggle__label" id="themeLabel">WHITE</span>
+      </button>
+
+      <!-- Top-left readout -->
+      <header class="hud-header">
+        <div class="hud-title">
+          <span class="glyph">◈</span> PORTFOLIO
+          <span class="hud-title__sub">CAREER TRAIL</span>
+        </div>
+        <div class="hud-meta" id="hudMeta">
+          <div><span class="k">SUBJECT</span> <span class="v" id="metaSubject">—</span></div>
+          <div><span class="k">STATUS</span> <span class="v ok">SYNCHRONIZED</span></div>
+          <div><span class="k">NODE</span> <span class="v" id="metaNode">STANDBY</span></div>
+        </div>
+      </header>
+
+      <!-- Bottom hint -->
+      <footer class="hud-hint">
+        <span class="pulse-dot"></span> SELECT A NODE TO DECODE THE SEQUENCE
+      </footer>
+
+      <!-- The neural map -->
+      <svg
+        id="graph"
+        viewBox="0 0 1400 900"
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label="Neural map of work experiences"
+      ></svg>
+
+      <!-- Detail panel -->
+      <aside class="memory-panel" id="panel" aria-hidden="true">
+        <button class="panel-close" id="panelClose" aria-label="Close">✕</button>
+        <span class="panel-corner tl"></span>
+        <span class="panel-corner br"></span>
+        <div class="panel-tag" id="panelPeriod">—</div>
+        <h2 class="panel-role" id="panelRole">—</h2>
+        <div class="panel-company" id="panelCompany">—</div>
+        <div class="panel-location" id="panelLocation">—</div>
+        <div class="panel-divider"></div>
+        <p class="panel-summary" id="panelSummary">—</p>
+        <div class="panel-tags" id="panelTags"></div>
+      </aside>
+
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
